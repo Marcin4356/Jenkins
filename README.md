@@ -1,42 +1,65 @@
-# Jenkins CI/CD
+# Jenkins CI/CD Pipeline
 
-A hands-on Jenkins pipeline project demonstrating automated build, test, artifact handling, container publishing, and deployment.
+A Jenkins pipeline lab that automates the build, test, artifact archiving, image publishing and deployment of a Java application.
 
 ## Pipeline
 
-The main Jenkins pipeline is defined in `pipeline/Jenkinsfile` and contains four stages:
+The pipeline in pipeline/Jenkinsfile contains four stages:
 
-1. Build
-2. Test
-3. Push
-4. Deploy
+```text
+Build
+  |
+  v
+Test
+  |
+  v
+Push
+  |
+  v
+Deploy
+```
 
-The build stage packages a Java application with Maven and archives the generated JAR artifact. The test stage executes the test suite and publishes JUnit reports.
+### Build
 
-The later stages handle publishing and deployment using shell scripts from the repository.
+The build stage runs Maven inside a Docker container and then executes the repository build script.
+
+The generated JAR files are archived by Jenkins with fingerprinting enabled.
+
+### Test
+
+The test stage runs Maven tests using a separate Docker-based Maven environment.
+
+JUnit XML reports are published with the Jenkins JUnit publisher.
+
+### Push
+
+The pipeline executes jenkins/push/push.sh to publish the built image/artifact.
+
+The Jenkins environment uses a credential named registry-pass for registry authentication.
+
+### Deploy
+
+The deployment stage executes jenkins/deploy/deploy.sh.
 
 ## Technologies
 
-- Jenkins
 - Jenkins Pipeline
-- Maven
 - Java
+- Maven
 - Docker
-- Shell scripting
 - JUnit
+- Shell scripting
 
-## Pipeline flow
+## Repository structure
 
-```text
-Source code
-    |
-  Build
-    |
-  Test
-    |
-  Push
-    |
- Deploy
+```
+pipeline/
+├── Jenkinsfile
+└── jenkins/
+    ├── build/
+    ├── test/
+    ├── push/
+    └── deploy/
 ```
 
-The repository is a practical CI/CD lab focused on Jenkins pipeline automation and integrating build, test, and deployment stages.
+The project demonstrates how build, test, artifact management and deployment steps can be combined into one Jenkins pipeline.
